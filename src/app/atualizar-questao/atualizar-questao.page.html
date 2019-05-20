@@ -64,7 +64,7 @@
   </div>
 
   <!-- NIVEL DE DIFICULDADE -->
-  <ion-item>
+  <ion-item *ngIf="level">
     <ion-label>Nível de dificuldade:</ion-label>
     <ion-select [(ngModel)]="nivel" interface="popover">
       <ion-select-option *ngFor="let item of niveis">{{ item }}</ion-select-option>
@@ -73,25 +73,5 @@
 
   <!-- ENVIAR QUESTÃO -->
   <ion-button color="primary" (click)="updateQuestion()" fill="solid" expand="block"> Atualizar questão </ion-button>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 </ion-content>

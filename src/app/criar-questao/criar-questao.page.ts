@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { QuestaoCustom } from '../questao';
 import { AlertController } from '@ionic/angular';
-import { range } from 'rxjs';
 import { QuestionDataService } from '../services/question-data.service';
+import { NivelComponent } from '../nivel/nivel.component';
+import { ConfigService } from '../variability-config/config.service';
 
 @Component({
   selector: 'app-criar-questao',
@@ -12,15 +12,17 @@ import { QuestionDataService } from '../services/question-data.service';
 })
 export class CriarQuestaoPage implements OnInit {
 
+  constructor(public qstDataService: QuestionDataService,
+    private alertCtrl: AlertController,
+    private configS: ConfigService) { }
+
   public listQuestions: Array<QuestaoCustom> = [];
 
-  niveis = ['1', '2', '3'];
   disciplinas = ['Matemática', 'Biologia', 'Física',
-  'Química', 'Literatura', 'Inglês',
-  'História', 'Geografia', 'Artes'].sort();
+    'Química', 'Literatura', 'Inglês',
+    'História', 'Geografia', 'Artes'].sort();
   textoQuestao = '';
   disciplina: string;
-  nivel: string;
   opcResposta = '';
   alternativa = '';
   formRadio = [
@@ -40,10 +42,23 @@ export class CriarQuestaoPage implements OnInit {
 
   textoLivre: string;
 
+  level: boolean;
+  @ViewChild(NivelComponent) nivelComponent;
+  receberNivel: string;
+
+  ngOnInit() {
+    this.valuesDefault();
+    this.configS.getInitConfig()
+      .subscribe(data => this.level = data.level);
+  }
+
+  ionViewDidEnter() {
+    console.log(this.level);
+  }
+
   resetCampos() {
     this.textoQuestao = null;
     this.disciplina = 'Any';
-    this.nivel = '-1';
     this.opcResposta = '';
     this.alternativa = null;
     this.formRadio = [
@@ -62,15 +77,11 @@ export class CriarQuestaoPage implements OnInit {
     this.textoLivre = null;
   }
 
-  constructor(private qstDataService: QuestionDataService,
-              private alertCtrl: AlertController) { }
-
-  ngOnInit() {
-    this.valuesDefault();
-  }
-
   createQuestion() {
-
+    if (this.level) {
+      this.receberNivel = this.nivelComponent.nivel;
+      console.log(this.receberNivel);
+    }
     if (this.textoQuestao === null || this.textoQuestao === '') {
       this.showAlert('Aviso!', 'Por favor, forneça um texto de questão válido.');
     } else if (this.disciplina === null || this.disciplina === '') {
@@ -82,7 +93,9 @@ export class CriarQuestaoPage implements OnInit {
       const qst = new QuestaoCustom();
       qst.textoQst = this.textoQuestao;
       qst.categoria = this.disciplina;
-      qst.nivelDificuldade = this.nivel;
+      if (this.level) {
+        qst.nivelDificuldade = this.receberNivel;
+      }
       if (this.opcResposta === 'unica') {
         qst.alternativas = this.formRadio;
         qst.opcEscolha = this.opcResposta;
@@ -105,6 +118,9 @@ export class CriarQuestaoPage implements OnInit {
       this.qstDataService.itens.push(qst);
       this.showAlert('Questão', 'Questão adicionada com sucesso!');
       this.resetCampos();
+      if (this.level) {
+        this.nivelComponent.valuesReset();
+      }
     }
   }
 

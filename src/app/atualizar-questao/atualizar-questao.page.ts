@@ -3,6 +3,7 @@ import { QuestionDataService } from '../services/question-data.service';
 import { QuestaoCustom } from '../questao';
 import { AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { ConfigService } from '../variability-config/config.service';
 
 @Component({
   selector: 'app-atualizar-questao',
@@ -19,6 +20,7 @@ export class AtualizarQuestaoPage implements OnInit {
     'Química', 'Literatura', 'Inglês',
     'História', 'Geografia', 'Artes'].sort();
   categoria = '';
+  level: boolean;
   nivel = '';
   opcResp = '';
   formRadio = [
@@ -37,14 +39,14 @@ export class AtualizarQuestaoPage implements OnInit {
 
   constructor(private qstDataService: QuestionDataService,
               private alertCtrl: AlertController,
-              private router: Router) { }
+              private router: Router,
+              private configS: ConfigService) { }
 
   ngOnInit() {
     // console.log(this.qstDataService.data);
     this.qst = this.qstDataService.data;
     this.textoQuestao = this.qst.textoQst;
     this.categoria = this.qst.categoria;
-    this.nivel = this.qst.nivelDificuldade;
 
     if (this.qst.opcEscolha === 'unica') {
       this.opcResp = this.qst.opcEscolha;
@@ -55,6 +57,15 @@ export class AtualizarQuestaoPage implements OnInit {
     } else if (this.qst.opcEscolha === 'texto') {
       this.opcResp = this.qst.opcEscolha;
       this.textoLivre = this.qst.textoLivre;
+    }
+    this.configS.getInitConfig()
+      .subscribe(data => this.level = data.level);
+  }
+
+  ionViewDidEnter() {
+    if (this.level) {
+      console.log(this.level);
+      this.nivel = this.qst.nivelDificuldade;
     }
   }
 
@@ -91,7 +102,9 @@ export class AtualizarQuestaoPage implements OnInit {
 
       this.qst.textoQst = this.textoQuestao;
       this.qst.categoria = this.categoria;
-      this.qst.nivelDificuldade = this.nivel;
+      if (this.level) {
+        this.qst.nivelDificuldade = this.nivel;
+      }
       if (this.opcResp === 'unica') {
         this.qst.alternativas = this.formRadio;
         this.qst.textoLivre = null;

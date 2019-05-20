@@ -114,16 +114,10 @@
   </div>
 
   <!-- NIVEL DE DIFICULDADE -->
-  <ion-item>
-    <ion-label>Nível de dificuldade:</ion-label>
-    <ion-select interface="popover" placeholder="---" [(ngModel)]="nivel">
-      <ion-select-option *ngFor="let item of niveis">{{ item }}</ion-select-option>
-    </ion-select>
-  </ion-item>
+  <div *ngIf="level">
+    <app-nivel></app-nivel>
+  </div>
 
   <!-- ENVIAR QUESTÃO -->
   <ion-button color="primary" (click)="createQuestion()" fill="solid" expand="block"> Enviar questão </ion-button>
-
-
-
 </ion-content>
