@@ -9,13 +9,10 @@ export class NivelComponent implements OnInit {
 
   niveis = ['1', '2', '3'];
   nivel: string;
-  @Input() childMessage: string;
 
   constructor() { }
 
-  ngOnInit() {
-    console.log('Child: ' + this.childMessage);
-  }
+  ngOnInit() { }
 
   valuesReset() {
     this.nivel = '-1';
