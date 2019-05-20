@@ -5,12 +5,12 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { AlunoPage } from './aluno.page';
+import { AccessKeyPage } from './access-key.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: AlunoPage
+    component: AccessKeyPage
   }
 ];
 
@@ -21,6 +21,6 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [AlunoPage]
+  declarations: [AccessKeyPage]
 })
-export class AlunoPageModule {}
+export class AccessKeyPageModule {}
